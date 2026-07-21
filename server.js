@@ -34,6 +34,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/items', require('./routes/items'));
+app.use('/categories', require('./routes/categories'));
 
 app.use((err, req, res, next) => {
     console.error(err);
