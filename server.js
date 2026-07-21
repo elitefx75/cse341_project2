@@ -30,7 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/swagger.json', express.static(path.join(__dirname, 'swagger.json')));
 
 app.get('/', (req, res) => {
-    res.json({ message: 'API is running' });
+    res.send('Hello World');
 });
 
 app.use('/items', require('./routes/items'));
@@ -50,29 +50,25 @@ app.use((err, req, res, next) => {
 });
 
 const startServer = async () => {
-    const defaultMongoUri = 'mongodb://127.0.0.1:27017/cse341_project2';
-    const mongoUri = process.env.MONGODB_URI || defaultMongoUri;
+    const mongoUri = process.env.MONGODB_URI;
 
-    if (!process.env.MONGODB_URI) {
-        console.warn('Warning: MONGODB_URI is not set. Using local MongoDB default at', defaultMongoUri);
-        console.warn('Start MongoDB locally or set MONGODB_URI in your .env file to use a different database.');
+    if (!mongoUri) {
+        console.warn('Warning: MONGODB_URI is not set. Starting the server without MongoDB.');
+        console.warn('Set MONGODB_URI in Render environment variables or your local .env file for full CRUD support.');
+    } else {
+        try {
+            await mongoose.connect(mongoUri);
+            console.log('Connected to MongoDB');
+        } catch (error) {
+            console.error(`MongoDB connection error connecting to ${mongoUri}:`, error.message || error);
+            console.error('The server will continue to run, but CRUD routes will fail until MongoDB is reachable.');
+        }
     }
 
-    try {
-        await mongoose.connect(mongoUri);
-        console.log('Connected to MongoDB');
-
-        if (require.main === module) {
-            app.listen(port, () => {
-                console.log(`Server running on http://localhost:${port}`);
-            });
-        }
-    } catch (error) {
-        console.error(`MongoDB connection error connecting to ${mongoUri}:`, error.message || error);
-        console.error('Please verify that MongoDB is running and that your MONGODB_URI is correct.');
-        if (require.main === module) {
-            process.exit(1);
-        }
+    if (require.main === module) {
+        app.listen(port, () => {
+            console.log(`Server running on http://localhost:${port}`);
+        });
     }
 };
 
