@@ -1,0 +1,18 @@
+### Get all contacts
+GET http://localhost:3000/items
+
+### Get a single contact
+GET http://localhost:3000
+
+### Create a contact
+POST http://localhost:3000/items
+Content-Type: application/json
+
+
+### Update a contact
+PUT http://localhost:3000
+Content-Type: application/json
+
+
+### Delete a contact
+DELETE http://localhost:3000
