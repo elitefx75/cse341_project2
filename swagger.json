@@ -5,7 +5,7 @@
     "description": "API for managing items",
     "version": "1.0.0"
   },
-  "host": "cse341-project1-uz2b.onrender.com",
+  "host": "",
   "basePath": "/",
   "schemes": [
     "https"
