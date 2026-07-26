@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Items API",
-    "description": "API for managing items",
+    "description": "API for managing items and users",
     "version": "1.0.0"
   },
   "host": "cse341-project2-1-x4n2.onrender.com",
@@ -58,30 +58,42 @@
             "schema": {
               "type": "object",
               "required": [
-                "firstName",
-                "lastName",
-                "email"
+                "ItemID",
+                "Name",
+                "Category",
+                "Description",
+                "Price",
+                "Quantity",
+                "Supplier"
               ],
               "properties": {
-                "firstName": {
+                "ItemID": {
                   "type": "string",
-                  "example": "any"
+                  "example": "ITM001"
                 },
-                "lastName": {
+                "Name": {
                   "type": "string",
-                  "example": "any"
+                  "example": "Water Testing Kit"
                 },
-                "email": {
+                "Category": {
                   "type": "string",
-                  "example": "any"
+                  "example": "Tool"
                 },
-                "favoriteColor": {
+                "Description": {
                   "type": "string",
-                  "example": "any"
+                  "example": "Portable kit for household water quality checks"
                 },
-                "birthday": {
+                "Price": {
+                  "type": "number",
+                  "example": 30
+                },
+                "Quantity": {
+                  "type": "number",
+                  "example": 5
+                },
+                "Supplier": {
                   "type": "string",
-                  "example": "any"
+                  "example": "SafeWater Supplies Ltd"
                 }
               }
             }
@@ -120,6 +132,9 @@
           "200": {
             "description": "OK"
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -148,26 +163,43 @@
             "required": true,
             "schema": {
               "type": "object",
+              "required": [
+                "ItemID",
+                "Name",
+                "Category",
+                "Description",
+                "Price",
+                "Quantity",
+                "Supplier"
+              ],
               "properties": {
-                "firstName": {
+                "ItemID": {
                   "type": "string",
-                  "example": "any"
+                  "example": "ITM001"
                 },
-                "lastName": {
+                "Name": {
                   "type": "string",
-                  "example": "any"
+                  "example": "Water Testing Kit"
                 },
-                "email": {
+                "Category": {
                   "type": "string",
-                  "example": "any"
+                  "example": "Tool"
                 },
-                "favoriteColor": {
+                "Description": {
                   "type": "string",
-                  "example": "any"
+                  "example": "Portable kit for household water quality checks"
                 },
-                "birthday": {
+                "Price": {
+                  "type": "number",
+                  "example": 30
+                },
+                "Quantity": {
+                  "type": "number",
+                  "example": 5
+                },
+                "Supplier": {
                   "type": "string",
-                  "example": "any"
+                  "example": "SafeWater Supplies Ltd"
                 }
               }
             }
@@ -201,8 +233,8 @@
           "200": {
             "description": "OK"
           },
-          "204": {
-            "description": "No Content"
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"

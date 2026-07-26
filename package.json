@@ -24,6 +24,7 @@
     "express": "^5.2.1",
     "init": "^0.1.2",
     "mongodb": "^7.5.0",
+    "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
