@@ -1,0 +1,33 @@
+### Get all items
+GET http://localhost:3000/items
+
+### Get a single item
+GET http://localhost:3000/items/6a514efbae1608e99da39f81
+
+### Create an item
+POST http://localhost:3000/items
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "jdoe@example.com",
+  "favoriteColor": "blue",
+  "birthday": "1990-01-01"
+}
+
+### Update an item
+PUT http://localhost:3000/items/64b9d2e1c9f0a1234567890a
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "favoriteColor": "green",
+  "birthday": "1990-01-01"
+}
+
+### Delete an item
+DELETE http://localhost:3000/items/64b9d2e1c9f0a1234567890a
+

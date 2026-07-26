@@ -1,0 +1,31 @@
+{
+  "name": "cse341_project1",
+  "version": "1.0.0",
+  "description": "My First Project",
+  "homepage": "https://github.com/elitefx75/cse341_project1#readme",
+  "bugs": {
+    "url": "https://github.com/elitefx75/cse341_project1/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elitefx75/cse341_project1.git"
+  },
+  "license": "ISC",
+  "author": "Elitefx",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^2.3.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "init": "^0.1.2",
+    "mongodb": "^7.5.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "swagger-autogen": "^2.23.7"
+  }
+}
