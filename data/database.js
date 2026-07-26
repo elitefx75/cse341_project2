@@ -5,9 +5,14 @@ const { MongoClient } = require('mongodb');
 
 let database;
 
+const getEnvValue = (key) => {
+    return process.env[key] || (dotenv.parse && dotenv.parse(require('fs').readFileSync(require('path').join(__dirname, '..', '.env'))) ? dotenv.parse(require('fs').readFileSync(require('path').join(__dirname, '..', '.env')))[key] : undefined);
+};
+
 const getDbName = () => {
-    if (process.env.DB_NAME && process.env.DB_NAME.trim()) {
-        return process.env.DB_NAME.trim();
+    const configuredDbName = getEnvValue('DB_NAME');
+    if (configuredDbName && configuredDbName.trim()) {
+        return configuredDbName.trim();
     }
 
     return 'project2';
@@ -19,12 +24,13 @@ const initDb = async (callback) => {
         return callback(null, database);
     }
 
-    if (!process.env.MONGODB_URL) {
+    const mongoUrl = getEnvValue('MONGODB_URL');
+    if (!mongoUrl) {
         return callback(new Error('MONGODB_URL is not defined'));
     }
 
     try {
-        const client = await MongoClient.connect(process.env.MONGODB_URL);
+        const client = await MongoClient.connect(mongoUrl);
         const dbName = getDbName();
         database = client.db(dbName);
         callback(null, database);
