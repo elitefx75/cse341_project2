@@ -1,7 +1,7 @@
 const mongodb = require('../data/database');
 const objectId = require('mongodb').ObjectId;
 
-const validateItemData = (data) => {
+const validateUserData = (data) => {
     const errors = [];
     const requiredFields = ['firstName', 'lastName', 'email', 'favoriteColor', 'birthday'];
 
@@ -25,9 +25,9 @@ const validateItemData = (data) => {
 
 const getAll = async (req, res) => {
     try {
-        const result = await mongodb.getDatabase().collection('items').find();
-        const items = await result.toArray();
-        res.status(200).type('json').send(JSON.stringify(items, null, 2));
+        const result = await mongodb.getDatabase().collection('users').find();
+        const users = await result.toArray();
+        res.status(200).type('json').send(JSON.stringify(users, null, 2));
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -35,12 +35,12 @@ const getAll = async (req, res) => {
 
 const getSingle = async (req, res) => {
     try {
-        const itemId = req.params.id;
-        if (!objectId.isValid(itemId)) {
-            return res.status(400).json({ message: 'Invalid item ID' });
+        const userId = req.params.id;
+        if (!objectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Invalid user ID' });
         }
 
-        const result = await mongodb.getDatabase().collection('items').findOne({ _id: new objectId(itemId) });
+        const result = await mongodb.getDatabase().collection('users').findOne({ _id: new objectId(userId) });
         res.status(200).type('json').send(JSON.stringify(result, null, 2));
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -48,12 +48,12 @@ const getSingle = async (req, res) => {
 };
 
 const create = async (req, res) => {
-    const errors = validateItemData(req.body);
+    const errors = validateUserData(req.body);
     if (errors.length > 0) {
         return res.status(400).json({ message: 'Validation failed', errors });
     }
 
-    const newItem = {
+    const newUser = {
         firstName: req.body.firstName.trim(),
         lastName: req.body.lastName.trim(),
         email: req.body.email.trim(),
@@ -62,7 +62,7 @@ const create = async (req, res) => {
     };
 
     try {
-        const result = await mongodb.getDatabase().collection('items').insertOne(newItem);
+        const result = await mongodb.getDatabase().collection('users').insertOne(newUser);
         res.status(201).json(result);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -70,17 +70,17 @@ const create = async (req, res) => {
 };
 
 const update = async (req, res) => {
-    const itemId = req.params.id;
-    if (!objectId.isValid(itemId)) {
-        return res.status(400).json({ message: 'Invalid item ID' });
+    const userId = req.params.id;
+    if (!objectId.isValid(userId)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
     }
 
-    const errors = validateItemData(req.body);
+    const errors = validateUserData(req.body);
     if (errors.length > 0) {
         return res.status(400).json({ message: 'Validation failed', errors });
     }
 
-    const updatedItem = {
+    const updatedUser = {
         firstName: req.body.firstName.trim(),
         lastName: req.body.lastName.trim(),
         email: req.body.email.trim(),
@@ -89,21 +89,21 @@ const update = async (req, res) => {
     };
 
     try {
-        const result = await mongodb.getDatabase().collection('items').updateOne({ _id: new objectId(itemId) }, { $set: updatedItem });
+        const result = await mongodb.getDatabase().collection('users').updateOne({ _id: new objectId(userId) }, { $set: updatedUser });
         res.status(200).json(result);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
-const deleteItem = async (req, res) => {
-    const itemId = req.params.id;
-    if (!objectId.isValid(itemId)) {
-        return res.status(400).json({ message: 'Invalid item ID' });
+const deleteUser = async (req, res) => {
+    const userId = req.params.id;
+    if (!objectId.isValid(userId)) {
+        return res.status(400).json({ message: 'Invalid user ID' });
     }
 
     try {
-        const result = await mongodb.getDatabase().collection('items').deleteOne({ _id: new objectId(itemId) });
+        const result = await mongodb.getDatabase().collection('users').deleteOne({ _id: new objectId(userId) });
         res.status(200).json(result);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -115,5 +115,5 @@ module.exports = {
     getSingle,
     create,
     update,
-    delete: deleteItem
+    delete: deleteUser
 };
