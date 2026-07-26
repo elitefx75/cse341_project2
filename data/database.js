@@ -10,19 +10,7 @@ const getDbName = () => {
         return process.env.DB_NAME.trim();
     }
 
-    if (process.env.MONGODB_URL) {
-        try {
-            const parsedUrl = new URL(process.env.MONGODB_URL);
-            const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
-            if (pathSegments.length > 0) {
-                return decodeURIComponent(pathSegments[0]);
-            }
-        } catch (err) {
-            console.warn('Could not parse MongoDB URL database name, falling back to default.');
-        }
-    }
-
-    return 'projects';
+    return 'project2';
 };
 
 const initDb = async (callback) => {
@@ -30,6 +18,11 @@ const initDb = async (callback) => {
         console.log('Database is already initialized!');
         return callback(null, database);
     }
+
+    if (!process.env.MONGODB_URL) {
+        return callback(new Error('MONGODB_URL is not defined'));
+    }
+
     try {
         const client = await MongoClient.connect(process.env.MONGODB_URL);
         const dbName = getDbName();
