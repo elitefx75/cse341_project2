@@ -3,7 +3,7 @@ const objectId = require('mongodb').ObjectId;
 
 const validateItemData = (data) => {
     const errors = [];
-    const requiredFields = ['firstName', 'lastName', 'email', 'favoriteColor', 'birthday'];
+    const requiredFields = ['ItemID', 'Name', 'Category', 'Description', 'Price', 'Quantity', 'Supplier'];
 
     if (!data || typeof data !== 'object' || Array.isArray(data)) {
         return ['Request body must be a JSON object'];
@@ -11,14 +11,15 @@ const validateItemData = (data) => {
 
     requiredFields.forEach((field) => {
         const value = data[field];
-        if (typeof value !== 'string' || value.trim() === '') {
+
+        if (field === 'Price' || field === 'Quantity') {
+            if (typeof value !== 'number' || Number.isNaN(value) || value < 0) {
+                errors.push(`${field} is required and must be a non-negative number`);
+            }
+        } else if (typeof value !== 'string' || value.trim() === '') {
             errors.push(`${field} is required`);
         }
     });
-
-    if (data.email && typeof data.email === 'string' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-        errors.push('email must be a valid email address');
-    }
 
     return errors;
 };
@@ -54,11 +55,13 @@ const create = async (req, res) => {
     }
 
     const newItem = {
-        firstName: req.body.firstName.trim(),
-        lastName: req.body.lastName.trim(),
-        email: req.body.email.trim(),
-        favoriteColor: req.body.favoriteColor.trim(),
-        birthday: req.body.birthday.trim()
+        ItemID: req.body.ItemID.trim(),
+        Name: req.body.Name.trim(),
+        Category: req.body.Category.trim(),
+        Description: req.body.Description.trim(),
+        Price: req.body.Price,
+        Quantity: req.body.Quantity,
+        Supplier: req.body.Supplier.trim()
     };
 
     try {
@@ -81,11 +84,13 @@ const update = async (req, res) => {
     }
 
     const updatedItem = {
-        firstName: req.body.firstName.trim(),
-        lastName: req.body.lastName.trim(),
-        email: req.body.email.trim(),
-        favoriteColor: req.body.favoriteColor.trim(),
-        birthday: req.body.birthday.trim()
+        ItemID: req.body.ItemID.trim(),
+        Name: req.body.Name.trim(),
+        Category: req.body.Category.trim(),
+        Description: req.body.Description.trim(),
+        Price: req.body.Price,
+        Quantity: req.body.Quantity,
+        Supplier: req.body.Supplier.trim()
     };
 
     try {

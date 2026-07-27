@@ -60,7 +60,7 @@
                 },
                 "Name": {
                   "type": "string",
-                  "example": "Water Testing Kit"
+                  "example": "Any"
                 },
                 "Category": {
                   "type": "string",
@@ -68,19 +68,19 @@
                 },
                 "Description": {
                   "type": "string",
-                  "example": "Portable kit for household water quality checks"
+                  "example": "Any"
                 },
                 "Price": {
                   "type": "number",
-                  "example": 30
+                  "example":240
                 },
                 "Quantity": {
                   "type": "number",
-                  "example": 5
+                  "example": 10
                 },
                 "Supplier": {
                   "type": "string",
-                  "example": "SafeWater Supplies Ltd"
+                  "example": "Any"
                 }
               }
             }
