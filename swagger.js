@@ -1,15 +1,138 @@
-const swaggerAutogen = require('swagger-autogen')();
+const fs = require('fs');
 
 const doc = {
+  swagger: '2.0',
   info: {
     title: 'Items API',
     description: 'API for managing items',
+    version: '1.0.0'
   },
   host: 'localhost:3000',
-  schemes: ['https', 'http'],
+  basePath: '/',
+  schemes: ['http', 'https'],
+  paths: {
+    '/items': {
+      get: {
+        summary: 'Get all items',
+        description: 'Retrieve all items',
+        produces: ['application/json'],
+        responses: {
+          200: { description: 'OK' },
+          500: { description: 'Internal Server Error' }
+        }
+      },
+      post: {
+        summary: 'Create an item',
+        description: 'Create a new item',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        parameters: [
+          {
+            name: 'body',
+            in: 'body',
+            required: true,
+            schema: {
+              type: 'object',
+              required: ['ItemID', 'Name', 'Category', 'Description', 'Price', 'Quantity', 'Supplier'],
+              properties: {
+                ItemID: { type: 'string', example: 'ITM001' },
+                Name: { type: 'string', example: 'Water Testing Kit' },
+                Category: { type: 'string', example: 'Tool' },
+                Description: { type: 'string', example: 'Portable kit for household water quality checks' },
+                Price: { type: 'number', example: 30 },
+                Quantity: { type: 'number', example: 5 },
+                Supplier: { type: 'string', example: 'SafeWater Supplies Ltd' }
+              }
+            }
+          }
+        ],
+        responses: {
+          201: { description: 'Created' },
+          400: { description: 'Bad Request' },
+          500: { description: 'Internal Server Error' }
+        }
+      }
+    },
+    '/items/{id}': {
+      get: {
+        summary: 'Get an item by ID',
+        description: 'Retrieve a single item by ID',
+        produces: ['application/json'],
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            type: 'string',
+            default: '1'
+          }
+        ],
+        responses: {
+          200: { description: 'OK' },
+          400: { description: 'Bad Request' },
+          500: { description: 'Internal Server Error' }
+        }
+      },
+      put: {
+        summary: 'Update an item by ID',
+        description: 'Update an existing item by ID',
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            type: 'string',
+            default: '1'
+          },
+          {
+            name: 'body',
+            in: 'body',
+            required: true,
+            schema: {
+              type: 'object',
+              required: ['ItemID', 'Name', 'Category', 'Description', 'Price', 'Quantity', 'Supplier'],
+              properties: {
+                ItemID: { type: 'string', example: 'ITM001' },
+                Name: { type: 'string', example: 'Water Testing Kit' },
+                Category: { type: 'string', example: 'Tool' },
+                Description: { type: 'string', example: 'Portable kit for household water quality checks' },
+                Price: { type: 'number', example: 30 },
+                Quantity: { type: 'number', example: 5 },
+                Supplier: { type: 'string', example: 'SafeWater Supplies Ltd' }
+              }
+            }
+          }
+        ],
+        responses: {
+          200: { description: 'OK' },
+          400: { description: 'Bad Request' },
+          500: { description: 'Internal Server Error' }
+        }
+      },
+      delete: {
+        summary: 'Delete an item by ID',
+        description: 'Delete an existing item by ID',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            type: 'string',
+            default: '1'
+          }
+        ],
+        responses: {
+          200: { description: 'OK' },
+          400: { description: 'Bad Request' },
+          500: { description: 'Internal Server Error' }
+        }
+      }
+    }
+  }
 };
 
 const outputFile = './swagger.json';
-const endpointsFiles = ['./routes/items.js', './routes/users.js'];
-
-swaggerAutogen(outputFile, endpointsFiles, doc);
+fs.writeFileSync(outputFile, JSON.stringify(doc, null, 2));
+console.log('Swagger spec written to swagger.json');
