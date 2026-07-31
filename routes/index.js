@@ -10,7 +10,17 @@ router.get('/auth/status', (req, res) => {
     res.json({ loggedIn: !!(req.session && req.session.user) });
 });
 
-router.get('/login', passport.authenticate('github', {
+router.get('/login', (req, res, next) => {
+    if (req.session) {
+        return req.session.destroy((err) => {
+            if (err) {
+                return next(err);
+            }
+            return next();
+        });
+    }
+    return next();
+}, passport.authenticate('github', {
     scope: ['user:email']
 }), (req, res) => { });
 

@@ -60,17 +60,17 @@ passport.deserializeUser((user, done) => {
     done(null, user);
 });
 
-app.get('/', (req, res) => {
+app.get('/hello', (req, res) => {
     if (!req.session.user) {
         return res.send('logged out');
     }
 
-    res.redirect('/hello');
+    res.redirect('/');
 });
 
-app.get('/hello', (req, res) => {
+app.get('/', (req, res) => {
     if (!req.session.user) {
-        return res.redirect('/');
+        return res.send('Welcome! Please log in to access the application.');
     }
 
     res.send('Hello world');
