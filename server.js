@@ -20,6 +20,7 @@ const getBaseUrl = () => {
     }
     return `http://localhost:${port}`;
 };
+const githubEnabled = Boolean(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET);
 const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL || process.env.CALLBACK_URL || `${getBaseUrl()}/auth/github/callback`;
 
 console.log('GitHub callback URL:', githubCallbackUrl);
@@ -50,7 +51,7 @@ app.use(cors({ methods: ['GET', 'POST', 'PUT', 'UPDATE', 'DELETE'] }))
 app.use(cors({ origin: '*' }))
 app.use('/', require('./routes/index.js'));
 
-if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+if (githubEnabled) {
     passport.use(new GithubStrategy({
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -87,15 +88,23 @@ app.get('/', (req, res) => {
     res.send('Hello world');
 });
 
-app.get('/auth/github/callback', passport.authenticate('github', {
-    failureRedirect: '/api-docs', session: false
-}), (req, res) => {
+app.get('/auth/github/callback', (req, res, next) => {
+    if (!githubEnabled) {
+        return res.status(503).send('GitHub login is not configured on this server. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET.');
+    }
+    return passport.authenticate('github', {
+        failureRedirect: '/api-docs', session: false
+    })(req, res, next);
+}, (req, res) => {
     req.session.user = req.user;
     res.redirect('/hello');
 });
 
 app.get('/github/callback', (req, res, next) => {
-    passport.authenticate('github', {
+    if (!githubEnabled) {
+        return res.status(503).send('GitHub login is not configured on this server. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET.');
+    }
+    return passport.authenticate('github', {
         failureRedirect: '/api-docs', session: false
     })(req, res, next);
 });
