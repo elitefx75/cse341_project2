@@ -11,6 +11,7 @@ const app = express();
 const GithubStrategy = require('passport-github2').Strategy;
 
 const port = process.env.PORT || 3000;
+const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL || 'http://localhost:3000/auth/github/callback';
 
 app.use(bodyparser.json());
 app.use(session({
@@ -38,17 +39,19 @@ app.use(cors({ methods: ['GET', 'POST', 'PUT', 'UPDATE', 'DELETE'] }))
 app.use(cors({ origin: '*' }))
 app.use('/', require('./routes/index.js'));
 
-passport.use(new GithubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/auth/github/callback'
-},
-    function (accessToken, refreshToken, profile, done) {
-        // Here you can handle the authenticated user profile
-        // For example, you can save the user to your database
-        return done(null, profile);
-    }
-));
+if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+    passport.use(new GithubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: githubCallbackUrl
+    },
+        function (accessToken, refreshToken, profile, done) {
+            return done(null, profile);
+        }
+    ));
+} else {
+    console.warn('GitHub OAuth env vars are missing. Set GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, and GITHUB_CALLBACK_URL to enable login.');
+}
 
 passport.serializeUser((user, done) => {
     done(null, user);
