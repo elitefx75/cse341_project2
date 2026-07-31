@@ -11,7 +11,18 @@ const app = express();
 const GithubStrategy = require('passport-github2').Strategy;
 
 const port = process.env.PORT || 3000;
-const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL || process.env.CALLBACK_URL || 'http://localhost:3000/auth/github/callback';
+const getBaseUrl = () => {
+    if (process.env.RENDER_EXTERNAL_URL) {
+        return process.env.RENDER_EXTERNAL_URL.trim().replace(/\/$/, '');
+    }
+    if (process.env.APP_URL) {
+        return process.env.APP_URL.trim().replace(/\/$/, '');
+    }
+    return `http://localhost:${port}`;
+};
+const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL || process.env.CALLBACK_URL || `${getBaseUrl()}/auth/github/callback`;
+
+console.log('GitHub callback URL:', githubCallbackUrl);
 
 app.use(bodyparser.json());
 app.use(session({
