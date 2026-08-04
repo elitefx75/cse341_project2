@@ -1,12 +1,37 @@
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
+
 dotenv.config();
 
 const { MongoClient } = require('mongodb');
 
 let database;
 
+const readLocalEnvFile = () => {
+    const envPath = path.join(__dirname, '..', '.env');
+
+    try {
+        if (!fs.existsSync(envPath)) {
+            return {};
+        }
+
+        return dotenv.parse(fs.readFileSync(envPath));
+    } catch (error) {
+        if (error && error.code !== 'ENOENT') {
+            console.warn('Unable to read local .env file:', error.message);
+        }
+        return {};
+    }
+};
+
 const getEnvValue = (key) => {
-    return process.env[key] || (dotenv.parse && dotenv.parse(require('fs').readFileSync(require('path').join(__dirname, '..', '.env'))) ? dotenv.parse(require('fs').readFileSync(require('path').join(__dirname, '..', '.env')))[key] : undefined);
+    if (process.env[key] !== undefined && process.env[key] !== '') {
+        return process.env[key];
+    }
+
+    const localEnv = readLocalEnvFile();
+    return localEnv[key];
 };
 
 const getDbName = () => {
